@@ -1,42 +1,38 @@
 import streamlit as st
 import spacy
-from spacy import displacy
-#from urllib.error import URLError
 import en_core_web_sm
 from newspaper import Article
+from spacy import displacy
+
 nlp = en_core_web_sm.load()
-from pprint import pprint
 
-st.title("Named Entity Recognizer (NER)")
-
-
-inp = st.radio ("Choose Input Type:", ("Text", "URL"))
-
-if inp == "Text":
-    
-    text = st.text_area("Enter a paragraph")
-    # Disable link input if text is chosen
-    link = st.text_input("disabled", disabled=True)
-elif inp == "URL":
-    
-    link = st.text_input("Enter a URL")
-    # Disable text area if URL is chosen
-    text = st.text_area("disabled", disabled=True)
+st.title("NLP ASSIGNMENT")
 
 
-if st.button("Submit"):
-    
-    if text:
-       doc = nlp(text)
-       
-       ent_html = displacy.render(doc, style="ent", jupyter=False)
-    
-       st.markdown(ent_html, unsafe_allow_html=True)
-    elif link:
-         article= Article(link)
-         article.download()
-         article.parse()
-         #print("Fetched text:", article.text) 
-         doc=nlp(article.text)
-         ent_html = displacy.render(doc, style="ent", jupyter=False)
-         st.markdown(ent_html, unsafe_allow_html=True)
+ 
+# Create a button, that when clicked, shows a textgit 
+if(st.button("About")):
+    st.text("FIRST ASSIGNMENT ON NLP")
+
+
+status = st.radio("SELECT ONE OF THE OPTIONS: ", ('ENTER URL', 'ENTER TEXT'))
+ 
+
+# Create box url,that when clicked  provide option to input url
+if status=="ENTER URL":
+    url=st.text_input("enter url")
+    if st.button("ANALIZE"):
+        article=Article(url)
+        article.download()
+        article.parse()
+        doc=nlp(article.text)
+        displacy.render(doc, jupyter=False, style='ent')
+        st.markdown(displacy.render(doc,style='ent',jupyter=False),unsafe_allow_html=True)
+
+# Create box url,that when clicked  provide option to input paragraph
+else:
+    paragraph=st.text_area("ENTER TEXT")
+    if st.button("ANALIZE"):
+        doc=nlp(paragraph)
+        displacy.render(doc, jupyter=False, style='ent')
+        st.markdown(displacy.render(doc,style='ent',jupyter=False),unsafe_allow_html=True)
